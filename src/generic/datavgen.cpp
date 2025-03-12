@@ -815,6 +815,7 @@ public:
     bool TryAdvanceCurrentColumn(wxDataViewTreeNode *node, wxKeyEvent& event, bool forward);
 
     wxDataViewColumn *GetCurrentColumn() const { return m_currentCol; }
+    void SetCurrentColumn(wxDataViewColumn* col)  { m_currentCol = col; }
     void ClearCurrentColumn() { m_currentCol = NULL; }
 
     bool IsSingleSel() const { return !GetParent()->HasFlag(wxDV_MULTIPLE); }
@@ -2694,7 +2695,7 @@ void wxDataViewMainWindow::OnPaint( wxPaintEvent &WXUNUSED(event) )
             if ( item == m_currentRow && m_hasFocus )
             {
 
-                if ( m_useCellFocus && m_currentCol && m_currentColSetByKeyboard )
+                if ( m_useCellFocus && m_currentCol /*&& m_currentColSetByKeyboard*/ )
                 {
                     renderColumnFocus = true;
 
@@ -4930,7 +4931,7 @@ bool wxDataViewMainWindow::TryAdvanceCurrentColumn(wxDataViewTreeNode *node, wxK
     if ( node && IsItemSingleValued(node->GetItem()) )
         return false;
 
-    if ( m_currentCol == NULL || !m_currentColSetByKeyboard )
+    if ( m_currentCol == NULL /*|| !m_currentColSetByKeyboard*/ )
     {
         if ( forward )
         {
@@ -5336,6 +5337,18 @@ void wxDataViewMainWindow::OnMouse( wxMouseEvent &event )
             {
                 m_lineSelectSingleOnUp = current;
                 ChangeCurrentRow(current); // change focus
+            }
+
+            wxPoint point = ScreenToClient(wxGetMousePosition());
+
+            wxDataViewItem myItem;
+            wxDataViewColumn* myCol = nullptr;
+            HitTest(point, myItem, myCol);
+
+            if (myCol)
+            {
+                m_currentCol = myCol;
+                this->Refresh();
             }
         }
         else // multi sel & either ctrl or shift is down
@@ -6309,6 +6322,12 @@ void wxDataViewCtrl::DoSetCurrentItem(const wxDataViewItem& item)
 wxDataViewColumn *wxDataViewCtrl::GetCurrentColumn() const
 {
     return m_clientArea->GetCurrentColumn();
+}
+
+void
+wxDataViewCtrl::SetCurrentColumn(wxDataViewColumn* col)
+{
+    return m_clientArea->SetCurrentColumn(col);
 }
 
 int wxDataViewCtrl::GetSelectedItemsCount() const

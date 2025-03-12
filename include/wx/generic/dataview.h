@@ -359,6 +359,7 @@ public:     // utility functions not part of the API
     wxDataViewColumn *GetColumnAt(unsigned int pos) const;
 
     virtual wxDataViewColumn *GetCurrentColumn() const wxOVERRIDE;
+    virtual void SetCurrentColumn(wxDataViewColumn*) wxOVERRIDE;
 
     virtual void OnInternalIdle() wxOVERRIDE;
 
