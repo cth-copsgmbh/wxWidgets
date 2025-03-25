@@ -806,18 +806,18 @@ wxRendererGeneric::DrawItemSelectionRect(wxWindow * WXUNUSED(win),
                                          int flags)
 {
     wxBrush brush;
-    if ( flags & wxCONTROL_SELECTED )
-    {
-        if ( flags & wxCONTROL_FOCUSED )
-        {
-            brush = wxBrush(wxSystemSettings::GetColour(wxSYS_COLOUR_HIGHLIGHT));
-        }
-        else // !focused
-        {
-            brush = wxBrush(wxSystemSettings::GetColour(wxSYS_COLOUR_BTNSHADOW));
-        }
-    }
-    else // !selected
+    //if ( flags & wxCONTROL_SELECTED )
+    //{
+    //    if ( flags & wxCONTROL_FOCUSED )
+    //    {
+    //        brush = wxBrush(wxSystemSettings::GetColour(wxSYS_COLOUR_HIGHLIGHT));
+    //    }
+    //    else // !focused
+    //    {
+    //        brush = wxBrush(wxSystemSettings::GetColour(wxSYS_COLOUR_BTNSHADOW));
+    //    }
+    //}
+    //else // !selected
     {
         brush = *wxTRANSPARENT_BRUSH;
     }
@@ -825,12 +825,12 @@ wxRendererGeneric::DrawItemSelectionRect(wxWindow * WXUNUSED(win),
     wxDCBrushChanger setBrush(dc, brush);
     bool drawFocusRect = (flags & wxCONTROL_CURRENT) && (flags & wxCONTROL_FOCUSED);
 
-    bool blackPen = drawFocusRect && !(flags & wxCONTROL_CELL);
-    wxDCPenChanger setPen(dc, *(blackPen ? wxBLACK_PEN : wxTRANSPARENT_PEN));
+    //bool blackPen = drawFocusRect && !(flags & wxCONTROL_CELL);
+    wxDCPenChanger setPen(dc, *(drawFocusRect ? wxBLACK_PEN : wxTRANSPARENT_PEN));
 
     dc.DrawRectangle( rect );
 
-    if ( drawFocusRect && (flags & wxCONTROL_CELL) )
+    if ( drawFocusRect /*&& (flags & wxCONTROL_CELL)*/ )
     {
         wxRect focusRect(rect);
         focusRect.Deflate(1);

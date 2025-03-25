@@ -365,7 +365,7 @@ void wxRendererMSWBase::DrawItemSelectionRect(wxWindow *win,
                                               const wxRect& rect,
                                               int flags)
 {
-    if ( flags & wxCONTROL_CELL )
+    if ( flags & wxCONTROL_CELL)
     {
         m_rendererNative.DrawItemSelectionRect(win, dc, rect, flags);
         return;
@@ -1021,16 +1021,17 @@ wxRendererXP::DrawItemSelectionRect(wxWindow *win,
 
     const int itemState = GetListItemState(flags);
 
-    if ( ::IsThemePartDefined(hTheme, LVP_LISTITEM, 0) )
-    {
-        RECT rc = ConvertToRECT(dc, rect);
+//fore the manual creation of the control to have the black rectangle and NOT the theme defined one
+    //if ( ::IsThemePartDefined(hTheme, LVP_LISTITEM, 0) )
+    //{
+    //    RECT rc = ConvertToRECT(dc, rect);
 
-        if ( ::IsThemeBackgroundPartiallyTransparent(hTheme, LVP_LISTITEM, itemState) )
-            ::DrawThemeParentBackground(GetHwndOf(win), GetHdcOf(dc.GetTempHDC()), &rc);
+    //    if ( ::IsThemeBackgroundPartiallyTransparent(hTheme, LVP_LISTITEM, itemState) )
+    //        ::DrawThemeParentBackground(GetHwndOf(win), GetHdcOf(dc.GetTempHDC()), &rc);
 
-        ::DrawThemeBackground(hTheme, GetHdcOf(dc.GetTempHDC()), LVP_LISTITEM, itemState, &rc, 0);
-    }
-    else
+    //    ::DrawThemeBackground(hTheme, GetHdcOf(dc.GetTempHDC()), LVP_LISTITEM, itemState, &rc, 0);
+    //}
+    //else
     {
         m_rendererNative.DrawItemSelectionRect(win, dc, rect, flags);
     }

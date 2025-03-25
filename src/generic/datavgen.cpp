@@ -2870,8 +2870,12 @@ void wxDataViewMainWindow::OnPaint( wxPaintEvent &WXUNUSED(event) )
             const bool hasValue = cell->PrepareForItem(model, dataitem, col->GetModelColumn());
 
             // draw the background
-            if ( !selected )
-                DrawCellBackground( cell, dc, cell_rect );
+            if (!selected
+                //|| (selected && col->GetModelColumn() != m_currentCol->GetModelColumn())
+                )
+            {
+                DrawCellBackground(cell, dc, cell_rect);
+            }
 
             // deal with the expander
             int indent = 0;
