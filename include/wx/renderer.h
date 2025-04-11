@@ -67,6 +67,7 @@ enum
     wxCONTROL_SELECTED   = 0x00000020,  // selected item in e.g. listbox
     wxCONTROL_CHECKED    = 0x00000040,  // (check/radio button) is checked
     wxCONTROL_CHECKABLE  = 0x00000080,  // (menu) item can be checked
+    wxCONTROL_SELECTED_COPY_PASTE = 0x00000100,  // simulate a copy&paste behaviour and draw the selection rectangle
     wxCONTROL_UNDETERMINED = wxCONTROL_CHECKABLE, // (check) undetermined state
 
     wxCONTROL_FLAGS_MASK = 0x000000ff,

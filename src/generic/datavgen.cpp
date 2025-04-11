@@ -2868,6 +2868,7 @@ void wxDataViewMainWindow::OnPaint( wxPaintEvent &WXUNUSED(event) )
 
             cell->SetState(state);
             const bool hasValue = cell->PrepareForItem(model, dataitem, col->GetModelColumn());
+            bool isSelectedForCopyPaste = GetOwner()->isColumnSelected(item, col->GetModelColumn());
 
             // draw the background
             if (!selected
@@ -2875,6 +2876,17 @@ void wxDataViewMainWindow::OnPaint( wxPaintEvent &WXUNUSED(event) )
                 )
             {
                 DrawCellBackground(cell, dc, cell_rect);
+            }
+            if (isSelectedForCopyPaste)
+            {
+                int flags = wxCONTROL_SELECTED_COPY_PASTE;
+                wxRendererNative::Get().DrawItemSelectionRect
+                (
+                    this,
+                    dc,
+                    cell_rect,
+                    flags
+                );
             }
 
             // deal with the expander
@@ -5639,6 +5651,10 @@ void wxDataViewCtrl::Init()
     m_colsDirty = false;
 
     m_allowMultiColumnSort = false;
+
+    lastSelectedItem.first = 0;
+    lastSelectedItem.second = 0;
+    lastSelectedRow = 0;
 }
 
 bool wxDataViewCtrl::Create(wxWindow *parent,
@@ -6134,6 +6150,77 @@ private:
     int m_expanderSize;
 };
 
+void
+wxDataViewCtrl::resetSelection()
+{
+    selectedElements.clear();
+
+    lastSelectedItem.first = 0;
+    lastSelectedItem.second = 0;
+
+    lastSelectedRow = 0;
+}
+
+void
+wxDataViewCtrl::setLastSelectedRow(int row)
+{
+    lastSelectedRow = row;
+}
+
+int
+wxDataViewCtrl::getLastSelectedRow()
+{
+    return lastSelectedRow;
+}
+
+void
+wxDataViewCtrl::addToSelection(int row, int col)
+{
+    auto itr = selectedElements.find(row);
+    if (itr == selectedElements.end())
+    {
+        selectedElements.insert(std::make_pair(row, std::set<int>()));
+        itr = selectedElements.find(row);
+    }
+    itr->second.insert(col);
+}
+
+bool
+wxDataViewCtrl::isColumnSelected(int row, int col)
+{
+    auto itr = selectedElements.find(row);
+    if (itr != selectedElements.end()
+        && itr->second.find(col) != itr->second.end())
+    {
+        return true;
+    }
+    return false;
+}
+
+bool
+wxDataViewCtrl::isAnyColumnSelectedFromRow(int row)
+{
+    auto itr = selectedElements.find(row);
+    if (itr != selectedElements.end()
+        && !itr->second.empty())
+    {
+        return true;
+    }
+    return false;
+}
+
+void
+wxDataViewCtrl::setLastSelectedItem(int row, int col)
+{
+    lastSelectedItem.first = row;
+    lastSelectedItem.second = col;
+}
+
+const std::pair<int, int>&
+wxDataViewCtrl::getLastSelectedElement()
+{
+    return lastSelectedItem;
+}
 
 unsigned int wxDataViewCtrl::GetBestColumnWidth(int idx) const
 {

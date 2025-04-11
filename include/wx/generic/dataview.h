@@ -20,6 +20,7 @@
 #if wxUSE_ACCESSIBILITY
     #include "wx/access.h"
 #endif // wxUSE_ACCESSIBILITY
+#include <set>
 
 class WXDLLIMPEXP_FWD_CORE wxDataViewMainWindow;
 class WXDLLIMPEXP_FWD_CORE wxDataViewHeaderWindow;
@@ -326,7 +327,20 @@ protected:
 
     void OnDPIChanged(wxDPIChangedEvent& event);
 
+    std::unordered_map<int, std::set<int>> selectedElements; //wxDataViewItem -> selected columns
+    std::pair<int, int> lastSelectedItem;
+    int                   lastSelectedRow;
+
 public:     // utility functions not part of the API
+
+    void resetSelection();
+    void setLastSelectedItem(int row, int col);
+    void setLastSelectedRow(int row);
+    int  getLastSelectedRow();
+    const std::pair<int, int>& getLastSelectedElement();
+    void addToSelection(int row, int col);
+    bool isColumnSelected(int row, int col);
+    bool isAnyColumnSelectedFromRow(int row);
 
     // returns the "best" width for the idx-th column
     unsigned int GetBestColumnWidth(int idx) const;
