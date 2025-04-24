@@ -327,7 +327,7 @@ protected:
 
     void OnDPIChanged(wxDPIChangedEvent& event);
 
-    std::unordered_map<int, std::set<int>> selectedElements; //wxDataViewItem -> selected columns
+    std::unordered_map<int, std::vector<int>> selectedElements; //wxDataViewItem -> selected columns
     std::pair<int, int> lastSelectedItem;
     int                   lastSelectedRow;
 

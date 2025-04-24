@@ -6179,20 +6179,25 @@ wxDataViewCtrl::addToSelection(int row, int col)
     auto itr = selectedElements.find(row);
     if (itr == selectedElements.end())
     {
-        selectedElements.insert(std::make_pair(row, std::set<int>()));
+        selectedElements.insert(std::make_pair(row, std::vector<int>()));
         itr = selectedElements.find(row);
     }
-    itr->second.insert(col);
+    itr->second.push_back(col);
 }
 
 bool
 wxDataViewCtrl::isColumnSelected(int row, int col)
 {
     auto itr = selectedElements.find(row);
-    if (itr != selectedElements.end()
-        && itr->second.find(col) != itr->second.end())
+    if (itr != selectedElements.end())
     {
-        return true;
+        for (auto itrCol : itr->second)
+        {
+            if (itrCol == col)
+            {
+                return true;
+            }
+        }
     }
     return false;
 }
@@ -6207,6 +6212,13 @@ wxDataViewCtrl::isAnyColumnSelectedFromRow(int row)
         return true;
     }
     return false;
+}
+
+void
+wxDataViewCtrl::setSelectionColor(const wxColor& col)
+{
+    selectionColor = col;
+    selectionColorSet = true;
 }
 
 void
