@@ -385,6 +385,9 @@ void wxRendererMSWBase::DrawItemSelectionRect(wxWindow *win,
                 color = btnface;
         }
 
+        //color = wxColor(200, 200, 200);
+        color = wxColor(217, 230, 239);
+
         wxDCBrushChanger setBrush(dc, wxBrush(color));
         wxDCPenChanger setPen(dc, *wxTRANSPARENT_PEN);
         dc.DrawRectangle(rect);

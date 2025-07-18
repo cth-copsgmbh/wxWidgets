@@ -3562,13 +3562,17 @@ int wxDataViewMainWindow::GetColumnStart(int column) const
 
     int x_end = x_start + w;
     xe = xx + rect.width;
-    if (x_end > xe)
-    {
-        sx = (xx + x_end - xe);
-    }
+    //if (x_end > xe)
+    //{
+    //    sx = (xx + x_end - xe);
+    //}
     if (x_start < xx)
     {
         sx = x_start;
+    }
+    else
+    {
+        sx = (xx + x_end - xe);
     }
     return sx;
 }
@@ -4935,7 +4939,7 @@ void wxDataViewMainWindow::OnRightKey(wxKeyEvent& event)
 
 bool wxDataViewMainWindow::TryAdvanceCurrentColumn(wxDataViewTreeNode *node, wxKeyEvent& event, bool forward)
 {
-    if ( GetOwner()->GetColumnCount() == 0 )
+    if ( GetOwner()->GetColumnCount() == 0 )      
         return false;
 
     if ( !m_useCellFocus )
@@ -6579,19 +6583,19 @@ void wxDataViewCtrl::EnsureVisibleRowCol( int row, int column )
         row = m_clientArea->GetRowCount();
 
     int first = m_clientArea->GetFirstVisibleRow();
-    int last = m_clientArea->GetLastFullyVisibleRow();
+    //int last = m_clientArea->GetLastFullyVisibleRow();
     if( row <= first )
     {
         m_clientArea->ScrollTo( row, column );
     }
-    else if( row > last )
+    else //if( row > last )
     {
-        if ( !HasFlag(wxDV_VARIABLE_LINE_HEIGHT) )
-        {
-            // Simple case as we can directly find the item to scroll to.
-            m_clientArea->ScrollTo(row - last + first, column);
-        }
-        else
+        //if ( !HasFlag(wxDV_VARIABLE_LINE_HEIGHT) )
+        //{
+        //    // Simple case as we can directly find the item to scroll to.
+        //    m_clientArea->ScrollTo(row - last + first, column);
+        //}
+        //else
         {
             // calculate scroll position based on last visible item
             const int itemStart = m_clientArea->GetLineStart(row);

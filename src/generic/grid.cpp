@@ -10025,9 +10025,9 @@ void wxGrid::DoSetRowSize( int row, int height )
 
     if ( m_rowHeights.IsEmpty() )
     {
-        // need to really create the array
-        InitRowHeights();
-    }
+            // need to really create the array
+            InitRowHeights();
+        }
 
     const int diff = UpdateRowOrColSize(m_rowHeights[row], height);
     if ( !diff )
@@ -10715,8 +10715,29 @@ void wxGrid::AutoSizeRows(bool setAsMin)
 {
     wxGridUpdateLocker locker(this);
 
-    for ( int row = 0; row < m_numRows; row++ )
+    for (int row = 0; row < m_numRows && row < 2; row++)
+    {     //only check the first 2 rows for height
         AutoSizeRow(row, setAsMin);
+    }
+
+    //getHeight of row 0
+    if (!m_rowHeights.IsEmpty())
+    {
+        int iHeight = m_rowHeights[0];
+        for (int row = 0; row < m_numRows; row++)
+        {     //only check the first 10 rows for height
+            m_rowHeights[row] = iHeight;
+        }
+    }
+
+    if (!m_rowBottoms.IsEmpty())
+    {
+        int iRowBottom = m_rowBottoms[0];
+        for (int row = 0; row < m_numRows; row++)
+        {     //only check the first 10 rows for height
+            m_rowBottoms[row] = (row + 1) * iRowBottom;
+        }
+    }
 }
 
 void wxGrid::AutoSize()
