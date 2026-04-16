@@ -5278,7 +5278,8 @@ void wxDataViewMainWindow::OnMouse( wxMouseEvent &event )
 
         // If the user click the expander, we do not do editing even if the column
         // with expander are editable
-        if (m_lastOnSame && !ignore_other_columns)
+        //if (m_lastOnSame && !ignore_other_columns)   
+        if (!ignore_other_columns)
         {
             if ((col == m_currentCol) && (current == m_currentRow) &&
                 IsCellEditableInMode(item, col, wxDATAVIEW_CELL_EDITABLE) )
