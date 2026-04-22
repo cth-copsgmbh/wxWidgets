@@ -238,6 +238,12 @@ public:
         return true;
     }
 
+    virtual bool IsReadOnly(const wxDataViewItem& WXUNUSED(item),
+        unsigned int WXUNUSED(col)) const
+    {
+        return true;
+    }        
+
     // define hierarchy
     virtual wxDataViewItem GetParent( const wxDataViewItem &item ) const = 0;
     virtual bool IsContainer( const wxDataViewItem &item ) const = 0;

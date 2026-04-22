@@ -154,7 +154,7 @@ wxTextCtrl *CreateEditorTextCtrl(wxWindow *parent, const wxRect& labelRect, cons
     wxTextCtrl* ctrl = new wxTextCtrl(parent, wxID_ANY, value,
                                       labelRect.GetPosition(),
                                       labelRect.GetSize(),
-                                      wxTE_PROCESS_ENTER);
+                                      wxTE_PROCESS_ENTER | wxTC_RIGHT);
 
     // Adjust size of wxTextCtrl editor to fit text, even if it means being
     // wider than the corresponding column (this is how Explorer behaves).
@@ -3046,6 +3046,7 @@ wxDataViewMainWindow::StartEditing(const wxDataViewItem& item,
         // Save the renderer to be able to finish/cancel editing it later and
         // save the control to be able to detect if we're still editing it.
         m_editorRenderer = renderer;
+        renderer->SetAlignment(col->GetAlignment());
         m_editorCtrl = renderer->GetEditorCtrl();
     }
 }
@@ -4566,6 +4567,9 @@ bool wxDataViewMainWindow::IsCellEditableInMode(const wxDataViewItem& item,
     if ( !GetModel()->HasValue(item, col->GetModelColumn()) )
         return false;
 
+    if (GetModel()->IsReadOnly(item, col->GetModelColumn()))
+        return false;
+
     return true;
 }
 
@@ -4782,7 +4786,22 @@ void wxDataViewMainWindow::OnChar( wxKeyEvent &event )
             break;
 
         default:
-            event.Skip();
+        {
+            wxPoint point = ScreenToClient(wxGetMousePosition());
+
+            wxDataViewItem mouseItem;
+            wxDataViewColumn* mouseCol = nullptr;
+            HitTest(point, mouseItem, mouseCol);
+            //check if field not readonly
+            if (IsCellEditableInMode(mouseItem, mouseCol, wxDATAVIEW_CELL_EDITABLE))
+            {
+                m_renameTimer->Start(100, true);
+            }
+            else
+            {
+                event.Skip();
+            }
+        }
     }
 }
 
@@ -5278,8 +5297,7 @@ void wxDataViewMainWindow::OnMouse( wxMouseEvent &event )
 
         // If the user click the expander, we do not do editing even if the column
         // with expander are editable
-        //if (m_lastOnSame && !ignore_other_columns)   
-        if (!ignore_other_columns)
+        if (m_lastOnSame && !ignore_other_columns)   
         {
             if ((col == m_currentCol) && (current == m_currentRow) &&
                 IsCellEditableInMode(item, col, wxDATAVIEW_CELL_EDITABLE) )
